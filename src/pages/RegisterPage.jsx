@@ -79,7 +79,7 @@ export default function RegisterPage() {
         </div>
         <div className="text-center mt-4">
           <button onClick={toggleLang} className="text-sm text-orange-600 font-medium hover:underline">
-            {lang === 'en' ? 'සිංහලෙන් කියවන්න' : 'Switch to English'}
+            {lang === 'en' ? 'සිංහලට හරවන්න' : 'Switch to English'}
           </button>
         </div>
       </div>

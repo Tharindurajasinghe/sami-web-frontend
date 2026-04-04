@@ -32,8 +32,8 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
-            <span className="text-white font-bold text-2xl">D</span>
+          <div className="w-30 h-16 bg-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+            <span className="text-white font-bold text-2xl">Dissanayaka City Center</span>
           </div>
           <h1 className="text-2xl font-bold text-gray-800">{t('loginTitle')}</h1>
         </div>
@@ -73,7 +73,7 @@ export default function LoginPage() {
         </p>
         <div className="text-center mt-3">
           <button onClick={toggleLang} className="text-sm text-orange-600 font-medium hover:underline">
-            {lang === 'en' ? 'සිංහලෙන් කියවන්න' : 'Switch to English'}
+            {lang === 'en' ? 'සිංහලට හරවන්න' : 'Switch to English'}
           </button>
         </div>
       </div>
