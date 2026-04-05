@@ -29,7 +29,7 @@
 const LEFT_IMAGE  = '/seasonal/left.png';   // ← change this
 const RIGHT_IMAGE = '/seasonal/right.png';  // ← change this
 
-const SEASONAL_TEXT = 'සුබ අලුත් අවුරුද්දක් වේවා..! මේ උත්සව සමයේ විශේෂ වට්ටම්';
+const SEASONAL_TEXT = 'සුබ අලුත් අවුරුද්දක් වේවා..! මේ උත්සව සමයේ විශේෂ වට්ටම්..!';
 const SEASONAL_FONT = 'Noto Serif Sinhala'; // Dearana-style serif Sinhala font
 // ══════════════════════════════════════════════════════════════════
 
@@ -147,14 +147,14 @@ export default function SeasonalBanner({ user, lang }) {
              className="text-3xl md:text-4xl font-bold mb-2 drop-shadow"
               style={{ fontFamily: lang === 'si' ? 'topic' : 'inherit' }}
             >
-               {lang === 'si' ? 'දිසානායක සිටි සෙන්ටර්' : 'Welcome to Our Shop'}
+               {lang === 'si' ? 'දිසානායක සිටි සෙන්ටර්' : 'Welcome to Dissanayaka City Center'}
                 </h1>
             <p className="text-orange-100 text-lg mt-1">
               {lang === 'si' ? 'නගරය - ගමට' : 'Browse categories and order with ease'}
             </p>
             {user && (
               <p className="mt-2 text-orange-200 text-sm">
-                {lang === 'si' ? `ආයුබෝවන්, ${user.phone}` : `Welcome back, ${user.phone}`}
+                {lang === 'si' ? `අමතන්න, 0704283858` : `Call Us, 0704283858`}
               </p>
             )}
 

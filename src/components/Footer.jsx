@@ -22,9 +22,9 @@ export default function Footer() {
         <div>
           <h3 className="text-white font-bold text-lg mb-3">{t('contactUs')}</h3>
           <ul className="space-y-2 text-sm">
-            <li className="flex items-center gap-2"><Phone size={15} className="text-orange-400 shrink-0"/><span>+94 77 123 4567</span></li>
+            <li className="flex items-center gap-2"><Phone size={15} className="text-orange-400 shrink-0"/><span>+94 70 4283 858</span></li>
             <li className="flex items-center gap-2"><Mail  size={15} className="text-orange-400 shrink-0"/><span>shop@example.com</span></li>
-            <li className="flex items-center gap-2"><MapPin size={15} className="text-orange-400 shrink-0"/><span>123 Main Street, Colombo, Sri Lanka</span></li>
+            <li className="flex items-center gap-2"><MapPin size={15} className="text-orange-400 shrink-0"/><span>No 68,Yudaganawa Janapadaya,Buththala</span></li>
           </ul>
         </div>
       </div>

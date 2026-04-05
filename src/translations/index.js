@@ -3,7 +3,7 @@ const translations = {
   en: {
     home:'Home', trackOrder:'Track My Order', cart:'Cart', logout:'Logout',
     login:'Login', register:'Register',
-    welcomeTitle:'Welcome to Our Shop', welcomeSubtitle:'Browse categories and order with ease',
+    welcomeTitle:'Welcome to Dissanayake City Center', welcomeSubtitle:'Browse categories and order with ease',
     shopNow:'Shop Now', categories:'Categories', noCategories:'No categories available yet.',
     addToCart:'Add to Cart', outOfStock:'Out of Stock', discount:'Discount',
     price:'Price', newPrice:'New Price', available:'Available', notAvailable:'Not Available',
@@ -85,7 +85,7 @@ const translations = {
     add:'එකතු කරන්න', edit:'සංස්කරණය', itemUpdated:'භාණ්ඩය යාවත්කාලීන කළා.',
     itemAdded:'භාණ්ඩය එකතු කළා.', categoryAdded:'ප්‍රවර්ගය එකතු කළා.', deleted:'මකා දැමීය.',
     aboutUs:'අප ගැන',
-    aboutText:'අපි ගුණාත්මක නිෂ්පාදන හොඳ මිලකට ලබාදෙන ස්ථානීය වෙළඳසැලකි.',
+    aboutText:'දිසානායක සිටි සෙන්ටර් මගින් ඔබට ගුණාත්මක නිශ්පාදන පහසු මිලට ඉක්මනින් ලබා ගත හැකිය.ඔබගේ පහසුව සදහා online ඔස්සේ භාණ්ඩ ඇණවුම් කරන්න..',
     contactUs:'අප හා සම්බන්ධ වන්න', phone:'දුරකථනය', email:'ඊමේල්', address:'ලිපිනය',
     allRightsReserved:'සියලු හිමිකම් ඇවිරිණි.',
   },
