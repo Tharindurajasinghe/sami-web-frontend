@@ -1,6 +1,6 @@
 // src/pages/LoginPage.jsx
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Phone, Lock, ShieldCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { authApi } from '../services/api.js';
@@ -13,7 +13,11 @@ export default function LoginPage() {
   const [loading, setLoading]   = useState(false);
   const { saveSession } = useAuth();
   const { t, lang, toggleLang } = useLang();
-  const navigate = useNavigate();
+  const navigate  = useNavigate();
+  const location  = useLocation();
+
+  // If user was redirected here from /cart or /checkout, go back there after login
+  const redirectTo = location.state?.from?.pathname || '/';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,7 +26,7 @@ export default function LoginPage() {
     try {
       const { token, user } = await authApi.login(phone.trim(), password);
       saveSession(user, token);
-      navigate('/');
+      navigate(redirectTo, { replace: true });
     } catch (err) {
       toast.error(err.message);
     } finally { setLoading(false); }
@@ -32,8 +36,8 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="w-30 h-16 bg-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
-            <span className="text-white font-bold text-2xl">Dissanayaka City Center</span>
+          <div className="w-16 h-16 bg-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+            <span className="text-white font-bold text-2xl">D</span>
           </div>
           <h1 className="text-2xl font-bold text-gray-800">{t('loginTitle')}</h1>
         </div>
@@ -73,7 +77,7 @@ export default function LoginPage() {
         </p>
         <div className="text-center mt-3">
           <button onClick={toggleLang} className="text-sm text-orange-600 font-medium hover:underline">
-            {lang === 'en' ? 'සිංහලට හරවන්න' : 'Switch to English'}
+            {lang === 'en' ? 'සිංහලෙන් කියවන්න' : 'Switch to English'}
           </button>
         </div>
       </div>

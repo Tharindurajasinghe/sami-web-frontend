@@ -41,9 +41,9 @@ export const authApi = {
 
 // ── Categories ────────────────────────────────────────────────────────────────
 export const categoryApi = {
-  getAll:  ()                          => api.get('/categories'),
-  create:  (name, nameSi, image)       => api.post('/categories', { name, nameSi, image }),
-  delete:  (id)                        => api.delete(`/categories/${id}`),
+  getAll:  ()                    => api.get('/categories'),
+  create:  (name, nameSi, image) => api.post('/categories', { name, nameSi, image }),
+  delete:  (id)                  => api.delete(`/categories/${id}`),
 };
 
 // ── Items ─────────────────────────────────────────────────────────────────────
@@ -57,14 +57,18 @@ export const itemApi = {
 
 // ── Orders ────────────────────────────────────────────────────────────────────
 export const orderApi = {
-  create:  (data)   => api.post('/orders', data),
-  getMine: ()       => api.get('/orders/mine'),
+  create:  (data) => api.post('/orders', data),
+  getMine: ()     => api.get('/orders/mine'),
 };
 
 // ── Admin ─────────────────────────────────────────────────────────────────────
 export const adminApi = {
-  getOrders:    ()             => api.get('/admin/orders'),
-  updateStatus: (id, status)   => api.patch(`/admin/orders/${id}/status`, { status }),
-  findUser:     (phone)        => api.get(`/admin/users?phone=${encodeURIComponent(phone)}`),
-  deleteUser:   (phone)        => api.delete(`/admin/users/${encodeURIComponent(phone)}`),
+  getOrders: () => api.get('/admin/orders'),
+
+  // ← CHANGED: now accepts optional rejectionMsg (sent only when rejecting)
+  updateStatus: (id, status, rejectionMsg = '') =>
+    api.patch(`/admin/orders/${id}/status`, { status, rejectionMsg }),
+
+  findUser:   (phone) => api.get(`/admin/users?phone=${encodeURIComponent(phone)}`),
+  deleteUser: (phone) => api.delete(`/admin/users/${encodeURIComponent(phone)}`),
 };

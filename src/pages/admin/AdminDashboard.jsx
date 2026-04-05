@@ -22,7 +22,15 @@ export default function AdminDashboard() {
   const { t, lang, toggleLang } = useLang();
   const navigate = useNavigate();
 
-  const handleLogout = () => { logout(); navigate('/login'); };
+  const handleLogout = () => {
+  const msg = lang === 'si'
+    ? 'ඔබට සැබවින්ම පිටවීමට අවශ්‍යද?'
+    : 'Are you sure you want to logout?';
+  if (window.confirm(msg)) {
+    logout();
+    navigate('/login');
+  }
+};
 
   const tabLabel = {
     orders:     t('manageOrders'),

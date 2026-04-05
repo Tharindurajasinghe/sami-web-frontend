@@ -40,7 +40,7 @@ const translations = {
     add:'Add', edit:'Edit', itemUpdated:'Item updated.', itemAdded:'Item added.',
     categoryAdded:'Category added.', deleted:'Deleted.',
     aboutUs:'About Us',
-    aboutText:'We are a local shop dedicated to bringing you quality products at great prices.',
+    aboutText:'We are a trusted local shop committed to providing high-quality products at competitive prices. Our goal is to serve our community with reliable service, great value, and a convenient shopping experience every day..',
     contactUs:'Contact Us', phone:'Phone', email:'Email', address:'Address',
     allRightsReserved:'All rights reserved.',
   },

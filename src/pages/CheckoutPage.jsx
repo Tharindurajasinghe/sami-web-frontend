@@ -20,6 +20,16 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [placed,  setPlaced]  = useState(false);
 
+  // ── Bug 1 fix: hard auth guard inside the page component ──────────────────
+  // App.jsx wraps /checkout in <LoginRequired> which handles the redirect,
+  // but this second guard protects against any edge-case where a guest
+  // reaches this component directly (e.g. stale render, SSR, direct URL).
+  if (!user) {
+    navigate('/login', { state: { from: { pathname: '/checkout' } }, replace: true });
+    return null;
+  }
+
+  // If cart is empty and order has not just been placed, go back to cart
   if (items.length === 0 && !placed) { navigate('/cart'); return null; }
 
   const handleOrder = async (e) => {
@@ -38,7 +48,13 @@ export default function CheckoutPage() {
       clearCart();
       setPlaced(true);
     } catch (err) {
-      toast.error(err.message);
+      // If the token expired mid-session, send the user back to login
+      if (err.message === 'Not authenticated' || err.message === 'Invalid or expired token') {
+        toast.error('Your session expired. Please log in again.');
+        navigate('/login', { state: { from: { pathname: '/checkout' } }, replace: true });
+      } else {
+        toast.error(err.message);
+      }
     } finally { setLoading(false); }
   };
 
@@ -105,7 +121,7 @@ export default function CheckoutPage() {
               const name = lang === 'si' && item.nameSi ? item.nameSi : item.name;
               return (
                 <div key={item._id} className="flex justify-between text-sm">
-                  <span className="text-gray-600 truncate mr-2">{name} ×{item.qty}</span>
+                  <span className="text-gray-600 truncate mr-2">{name} x{item.qty}</span>
                   <span className="font-medium text-gray-800 whitespace-nowrap">Rs. {(item.finalPrice * item.qty).toFixed(2)}</span>
                 </div>
               );

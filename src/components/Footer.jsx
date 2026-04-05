@@ -1,5 +1,5 @@
 // src/components/Footer.jsx
-import { Phone, Mail, MapPin } from 'lucide-react';
+import { Phone, Mail, MapPin, Facebook } from 'lucide-react';
 import { useLang } from '../context/LanguageContext.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 
@@ -23,13 +23,20 @@ export default function Footer() {
           <h3 className="text-white font-bold text-lg mb-3">{t('contactUs')}</h3>
           <ul className="space-y-2 text-sm">
             <li className="flex items-center gap-2"><Phone size={15} className="text-orange-400 shrink-0"/><span>+94 70 4283 858</span></li>
-            <li className="flex items-center gap-2"><Mail  size={15} className="text-orange-400 shrink-0"/><span>shop@example.com</span></li>
+            <li className="flex items-center gap-2"><Facebook  size={15} className="text-orange-400 shrink-0"/><a 
+              href="https://www.facebook.com/share/18E8eCJLdn/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+             className="hover:text-white underline"
+               >
+              Dissanayake City Center Facebook Page
+              </a></li>
             <li className="flex items-center gap-2"><MapPin size={15} className="text-orange-400 shrink-0"/><span>No 68,Yudaganawa Janapadaya,Buththala</span></li>
           </ul>
         </div>
       </div>
       <div className="border-t border-gray-700 text-center py-4 text-xs text-gray-500">
-        © {new Date().getFullYear()} Shop Online. {t('allRightsReserved')}
+        © {new Date().getFullYear()} TAR Solutions. {t('allRightsReserved')}
       </div>
     </footer>
   );

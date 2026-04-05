@@ -1,12 +1,14 @@
 // src/pages/CartPage.jsx
-import { useNavigate } from 'react-router-dom';
-import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Trash2, Plus, Minus, ShoppingBag, LogIn } from 'lucide-react';
 import { useCart } from '../context/CartContext.jsx';
 import { useLang } from '../context/LanguageContext.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 
 export default function CartPage() {
   const { items, removeItem, updateQty, total } = useCart();
   const { t, lang } = useLang();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   if (items.length === 0) {
@@ -24,7 +26,7 @@ export default function CartPage() {
       <h1 className="section-title">{t('yourCart')}</h1>
 
       <div className="grid md:grid-cols-3 gap-6">
-        {/* Items */}
+        {/* Items list */}
         <div className="md:col-span-2 space-y-3">
           {items.map(item => {
             const name = lang === 'si' && item.nameSi ? item.nameSi : item.name;
@@ -58,7 +60,7 @@ export default function CartPage() {
           })}
         </div>
 
-        {/* Summary */}
+        {/* Order summary */}
         <div className="card p-5 h-fit sticky top-20">
           <h2 className="font-bold text-lg text-gray-800 mb-4">{t('total')}</h2>
           <div className="space-y-2 mb-4">
@@ -76,8 +78,37 @@ export default function CartPage() {
             <span>{t('total')}</span>
             <span>Rs. {total.toFixed(2)}</span>
           </div>
-          <button onClick={() => navigate('/checkout')} className="btn-primary w-full">{t('checkout')}</button>
-          <button onClick={() => navigate('/')} className="btn-secondary w-full mt-2">{t('continueShopping')}</button>
+
+          {/* ── Checkout button — login required ── */}
+          {user ? (
+            // Logged in — go straight to checkout
+            <button onClick={() => navigate('/checkout')} className="btn-primary w-full">
+              {t('checkout')}
+            </button>
+          ) : (
+            // Guest — show message and login button
+            <div>
+              <div className="bg-orange-50 border border-orange-200 rounded-xl p-3 mb-3 text-center">
+                <p className="text-sm text-gray-700 font-medium mb-0.5">
+                  ඇණවුම දැමීම සදහා ලොගින් විය යුතුය.
+                </p>
+                <p className="text-xs text-gray-500">
+                  To checkout you should be login to the system.
+                </p>
+              </div>
+              <Link
+                to="/login"
+                state={{ from: { pathname: '/checkout' } }}
+                className="btn-primary w-full flex items-center justify-center gap-2"
+              >
+                <LogIn size={16}/> {t('loginBtn')}
+              </Link>
+            </div>
+          )}
+
+          <button onClick={() => navigate('/')} className="btn-secondary w-full mt-2">
+            {t('continueShopping')}
+          </button>
         </div>
       </div>
     </div>
