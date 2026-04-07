@@ -3,7 +3,6 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext.jsx';
 import Navbar  from './components/Navbar.jsx';
 import Footer  from './components/Footer.jsx';
-
 import LoginPage         from './pages/LoginPage.jsx';
 import RegisterPage      from './pages/RegisterPage.jsx';
 import HomePage          from './pages/HomePage.jsx';
@@ -13,6 +12,7 @@ import CheckoutPage      from './pages/CheckoutPage.jsx';
 import TrackOrderPage    from './pages/TrackOrderPage.jsx';
 import AdminLoginPage    from './pages/admin/AdminLoginPage.jsx';
 import AdminDashboard    from './pages/admin/AdminDashboard.jsx';
+import ScrollToTop from './components/ScrollToTop.jsx';
 
 // Spinner shown while auth state is loading
 function Spinner() {
@@ -54,6 +54,7 @@ function GuestOnly({ children }) {
 export default function App() {
   return (
     <>
+       <ScrollToTop/> 
       <Navbar/>
       <Routes>
         {/* ── Fully public — no login needed ── */}
