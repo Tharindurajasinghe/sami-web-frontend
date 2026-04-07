@@ -99,6 +99,9 @@ export default function AdminOrders() {
               {/* Customer info */}
               <div className="bg-blue-50 rounded-xl p-3 mb-3 text-sm space-y-1">
                 <p><span className="font-semibold text-gray-600">{t('customerPhone')}:</span> {order.userPhone}</p>
+                 {order.customerName && (
+    <p><span className="font-semibold text-gray-600">Customer Name:</span> {order.customerName}</p>
+  )}
                 <p><span className="font-semibold text-gray-600">{t('yourPhone')}:</span> {order.phone}</p>
                 <p><span className="font-semibold text-gray-600">{t('deliveryAddr')}:</span> {order.address}</p>
                 {order.message && <p><span className="font-semibold text-gray-600">{t('customerMsg')}:</span> {order.message}</p>}

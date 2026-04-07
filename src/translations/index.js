@@ -43,6 +43,7 @@ const translations = {
     aboutText:'We are a trusted local shop committed to providing high-quality products at competitive prices. Our goal is to serve our community with reliable service, great value, and a convenient shopping experience every day..',
     contactUs:'Contact Us', phone:'Phone', email:'Email', address:'Address',
     allRightsReserved:'All rights reserved.',
+    firstName:'First Name',lastName:'Last Name',
   },
   si: {
     home:'මුල් පිටුව', trackOrder:'ඔබේ ඇණව්ම්', cart:'කූඩය', logout:'පිටවීම',
@@ -64,7 +65,7 @@ const translations = {
     orderTotal:'මුළු', orderStatus:'තත්වය', deliveryAddr:'ලිපිනය', yourMsg:'ඔබේ පණිවිඩය',
     pending:'බලා සිටිනු', confirmed:'තහවුරු කළා', rejected:'ප්‍රතික්ෂේප', complete:'සම්පූර්ණ',
     loginTitle:'ගිණුමට ඇතුල් වන්න', registerTitle:'ගිණුමක් සාදන්න',
-    phoneNumber:'දුරකථන අංකය', password:'මුරපදය', confirmPassword:'මුරපදය තහවුරු කරන්න',
+    phoneNumber:'දුරකථන අංකය', firstName:'මුල් නම',lastName:'වාසගම',password:'මුරපදය', confirmPassword:'මුරපදය තහවුරු කරන්න',
     noAccount:'ගිණුමක් නොමැතිද?', haveAccount:'ගිණුමක් තිබේද?',
     adminLogin:'පරිපාලක ප්‍රවේශය', loginBtn:'ඇතුල් වන්න', registerBtn:'ලියාපදිංචි වන්න',
     passwordMismatch:'මුරපද ගැලපෙන්නේ නැත.', shortPassword:'මුරපදය අඩුම අකුරු 6 ක් විය යුතුය.',
@@ -88,6 +89,7 @@ const translations = {
     aboutText:'දිසානායක සිටි සෙන්ටර් මගින් ඔබට ගුණාත්මක නිශ්පාදන පහසු මිලට ඉක්මනින් ලබා ගත හැකිය.ඔබගේ පහසුව සදහා online ඔස්සේ භාණ්ඩ ඇණවුම් කරන්න..',
     contactUs:'අප හා සම්බන්ධ වන්න', phone:'දුරකථනය', email:'ඊමේල්', address:'ලිපිනය',
     allRightsReserved:'සියලු හිමිකම් ඇවිරිණි.',
+    firstName:'මුල් නම',
   },
 };
 export default translations;

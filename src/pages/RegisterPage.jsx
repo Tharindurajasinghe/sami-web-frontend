@@ -12,6 +12,8 @@ export default function RegisterPage() {
   const [pass,    setPass]    = useState('');
   const [confirm, setConfirm] = useState('');
   const [loading, setLoading] = useState(false);
+  const [firstName, setFirstName] = useState('');
+  const [lastName,  setLastName]  = useState('');
   const { saveSession } = useAuth();
   const { t, lang, toggleLang } = useLang();
   const navigate = useNavigate();
@@ -23,7 +25,7 @@ export default function RegisterPage() {
     if (pass !== confirm) { toast.error(t('passwordMismatch')); return; }
     setLoading(true);
     try {
-      const { token, user } = await authApi.register(phone.trim(), pass);
+      const { token, user } = await authApi.register(phone.trim(), pass , firstName.trim(), lastName.trim());
       saveSession(user, token);
       toast.success(lang === 'si' ? 'ලියාපදිංචිය සාර්ථකයි!' : 'Registered successfully!');
       navigate('/');
@@ -42,8 +44,24 @@ export default function RegisterPage() {
           <h1 className="text-2xl font-bold text-gray-800">{t('registerTitle')}</h1>
         </div>
 
+        
+
         <div className="card p-6 shadow-md">
+
+          
           <form onSubmit={handleSubmit} className="space-y-4">
+
+            <div>
+           <label className="block text-sm font-medium text-gray-700 mb-1">{t('firstName')}</label>
+           <input value={firstName} onChange={e => setFirstName(e.target.value)}
+                className="input-field" placeholder="Kamal" />
+           </div>
+          <div>
+             <label className="block text-sm font-medium text-gray-700 mb-1">{t('lastName')}</label>
+                <input value={lastName} onChange={e => setLastName(e.target.value)}
+                     className="input-field" placeholder="Perera" />
+          </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{t('phoneNumber')}</label>
               <div className="relative">

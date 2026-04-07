@@ -67,10 +67,15 @@ const handleLogout = () => {
             </button>
 
             {isLoggedIn ? (
+              <div className="hidden md:flex items-center gap-3">
+                <span className="text-sm text-gray-600 font-medium">
+        Hi, {user.firstName}
+      </span>
               <button onClick={handleLogout}
                 className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-xl text-gray-600 hover:bg-red-50 hover:text-red-500 transition-colors text-sm font-medium">
                 <LogOut size={16}/><span>{t('logout')}</span>
               </button>
+              </div>
             ) : (
               <Link to="/login"
                 className="hidden md:flex items-center gap-1.5 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white transition-colors text-sm font-semibold">

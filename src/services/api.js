@@ -34,7 +34,7 @@ export const api = {
 
 // ── Auth ─────────────────────────────────────────────────────────────────────
 export const authApi = {
-  register:   (phone, password) => api.post('/auth/register',    { phone, password }),
+  register:   (phone, password,firstName, lastName) => api.post('/auth/register',    { phone, password,firstName, lastName  }),
   login:      (phone, password) => api.post('/auth/login',       { phone, password }),
   adminLogin: (phone, password) => api.post('/auth/admin-login', { phone, password }),
 };
