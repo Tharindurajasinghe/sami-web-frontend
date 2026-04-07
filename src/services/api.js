@@ -43,6 +43,7 @@ export const authApi = {
 export const categoryApi = {
   getAll:  ()                    => api.get('/categories'),
   create:  (name, nameSi, image) => api.post('/categories', { name, nameSi, image }),
+  update:  (id, name, nameSi, image) => api.put(`/categories/${id}`, { name, nameSi, image }),
   delete:  (id)                  => api.delete(`/categories/${id}`),
 };
 

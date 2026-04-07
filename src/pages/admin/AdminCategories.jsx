@@ -1,10 +1,11 @@
 // src/pages/admin/AdminCategories.jsx
 import { useEffect, useState } from 'react';
-import { Plus, Trash2, Loader2, ImagePlus } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { categoryApi } from '../../services/api.js';
 import { useLang } from '../../context/LanguageContext.jsx';
 import { compressImage } from '../../utils/image.js';
+import { Plus, Trash2, Loader2, ImagePlus, Pencil, X } from 'lucide-react';
+
 
 export default function AdminCategories() {
   const { t, lang } = useLang();
@@ -12,6 +13,8 @@ export default function AdminCategories() {
   const [loading,    setLoading]    = useState(true);
   const [saving,     setSaving]     = useState(false);
   const [form,       setForm]       = useState({ name: '', nameSi: '', image: null });
+  const [editId, setEditId] = useState(null);   // null = adding, string = editing
+
 
   const load = () => {
     setLoading(true);
@@ -25,17 +28,34 @@ export default function AdminCategories() {
     catch (err) { toast.error(err.message); }
   };
 
-  const handleAdd = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.name.trim()) { toast.error('Category name required'); return; }
     setSaving(true);
     try {
-      await categoryApi.create(form.name.trim(), form.nameSi.trim(), form.image);
-      toast.success(t('categoryAdded'));
+      if (editId) {
+        await categoryApi.update(editId, form.name.trim(), form.nameSi.trim(), form.image);
+        toast.success(t('update') + '!');
+      } else {
+        await categoryApi.create(form.name.trim(), form.nameSi.trim(), form.image);
+        toast.success(t('categoryAdded'));
+      }
       setForm({ name: '', nameSi: '', image: null });
+      setEditId(null);
       load();
     } catch (err) { toast.error(err.message); }
     finally { setSaving(false); }
+  };
+
+  const startEdit = (cat) => {
+    setForm({ name: cat.name, nameSi: cat.nameSi || '', image: cat.image || null });
+    setEditId(cat._id);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const cancelEdit = () => {
+    setForm({ name: '', nameSi: '', image: null });
+    setEditId(null);
   };
 
   const handleDelete = async (id) => {
@@ -51,9 +71,10 @@ export default function AdminCategories() {
       {/* Add form */}
       <div className="card p-5 mb-6">
         <h3 className="font-semibold text-gray-700 mb-4 flex items-center gap-2">
-          <Plus size={18} className="text-orange-500"/>{t('addCategory')}
+          {editId ? <Pencil size={18} className="text-orange-500"/> : <Plus size={18} className="text-orange-500"/>}
+        {editId ? (lang === 'si' ? 'ප්‍රවර්ගය සංස්කරණය' : 'Edit Category') : t('addCategory')}
         </h3>
-        <form onSubmit={handleAdd} className="grid sm:grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="grid sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">{t('categoryName')}</label>
             <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
@@ -75,11 +96,17 @@ export default function AdminCategories() {
             </label>
             {form.image && <img src={form.image} alt="preview" className="mt-2 h-24 rounded-lg object-cover"/>}
           </div>
-          <div className="sm:col-span-2">
-            <button type="submit" disabled={saving} className="btn-primary flex items-center gap-2">
-              <Plus size={16}/>{saving ? '...' : t('add')}
-            </button>
-          </div>
+          <div className="flex gap-3">
+              <button type="submit" disabled={saving} className="btn-primary flex items-center gap-2">
+                {editId ? <Pencil size={16}/> : <Plus size={16}/>}
+                {saving ? '...' : editId ? t('update') : t('add')}
+              </button>
+              {editId && (
+                <button type="button" onClick={cancelEdit} className="btn-secondary flex items-center gap-2">
+                  <X size={16}/>{t('cancel')}
+                </button>
+              )}
+            </div>
         </form>
       </div>
 
@@ -97,9 +124,14 @@ export default function AdminCategories() {
                 </div>
                 <div className="p-3 flex items-center justify-between">
                   <p className="font-medium text-gray-800 text-sm truncate">{name}</p>
-                  <button onClick={() => handleDelete(cat._id)} className="text-red-400 hover:text-red-600 ml-2 shrink-0">
-                    <Trash2 size={16}/>
-                  </button>
+                  <div className="flex gap-2">
+                    <button onClick={() => startEdit(cat)} className="text-orange-400 hover:text-orange-600 shrink-0">
+                      <Pencil size={16}/>
+                    </button>
+                    <button onClick={() => handleDelete(cat._id)} className="text-red-400 hover:text-red-600 shrink-0">
+                      <Trash2 size={16}/>
+                    </button>
+                  </div>
                 </div>
               </div>
             );
