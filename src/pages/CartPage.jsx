@@ -128,6 +128,8 @@ export default function CartPage() {
             <span>{t('total')}</span>
             <span>Rs. {total.toFixed(2)}</span>
           </div>
+          <div><p className="text-xs p-2 text-gray-500 mt-1">* {t('del')}</p></div>
+          
 
           {/* Checkout — login required */}
           {user ? (

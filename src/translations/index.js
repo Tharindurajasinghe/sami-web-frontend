@@ -50,6 +50,7 @@ const translations = {
      con3:'Delivery charges for less than 2km are only 200.',
      con4:'For every 1km more than 2km, an additional Rs. 50 will be charged.',
      con5:'Delivery facility is provided for orders above Rs. 2500 only.',
+     del:'Note: Delivery charges will be added to this total.',
       
 
   },
@@ -104,6 +105,7 @@ const translations = {
     con3:'2km කට වඩා අඩු deliver සදහා අයකිරීම රු.200ක් පමණි.',
     con4:'2kmට වඩා වැඩිවන සැම කිලෝමීටර් 1ක් සදහාම අමතරව රු.50ක මුදලක් අය කරනු ලබයි.',
     con5:'Deliver පහසුකම ලබා දෙන්නේ රු.2500/= ට වැඩි ඇණවුම් සදහා පමණි.',
+    del:'සැ.යු.- මෙම මුලු මුදලට ඩිලිවර් ගාස්තු එකතු වේ.',
   },
 };
 export default translations;
