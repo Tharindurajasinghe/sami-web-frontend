@@ -77,16 +77,16 @@ export default function CheckoutPage() {
   return (
     <div className="main-content page-container">
       <h1 className="section-title">{t('checkoutTitle')}</h1>
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid md:grid-cols-2 gap-4  md:gap-6">
 
         {/* Form */}
-        <div className="card p-6">
+        <div className="card p-4 md:p-6">
           <form onSubmit={handleOrder} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{t('deliveryAddress')}</label>
               <div className="relative">
                 <MapPin size={16} className="absolute left-3 top-3.5 text-gray-400"/>
-                <textarea value={address} onChange={e => setAddress(e.target.value)} rows={3}
+                <textarea value={address} onChange={e => setAddress(e.target.value)} rows={2}
                   className="input-field pl-10 resize-none"
                   placeholder={lang === 'si' ? 'ඔබේ ලිපිනය ලියන්න...' : 'Enter your delivery address...'}/>
               </div>
@@ -107,15 +107,15 @@ export default function CheckoutPage() {
                   placeholder={lang === 'si' ? 'පණිවිඩයක් තිබේ නම්...' : 'Any special instructions...'}/>
               </div>
             </div>
-            <button type="submit" disabled={loading} className="btn-primary w-full mt-2">
+            <button type="submit" disabled={loading} className="btn-primary w-full mt-3 py-3">
               {loading ? '...' : t('placeOrder')}
             </button>
           </form>
         </div>
 
         {/* Summary */}
-        <div className="card p-6 h-fit">
-          <h2 className="font-bold text-lg text-gray-800 mb-4">{t('orderItems')}</h2>
+        <div className="card p-4 md:p-6 h-fit">
+          <h2 className="font-bold text-base md:text-lg text-gray-800 mb-3">{t('orderItems')}</h2>
           <div className="space-y-2 mb-4">
             {items.map(item => {
               const name = lang === 'si' && item.nameSi ? item.nameSi : item.name;
