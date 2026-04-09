@@ -33,6 +33,15 @@ export default function CartPage() {
 
   return (
     <div className="main-content page-container">
+      {/* Delivery info notice */}
+<div className="bg-orange-50 border border-orange-200 rounded-2xl p-4 mb-6 text-sm text-gray-700 space-y-1">
+  <h2>{t('Conditiontitile')}</h2>
+  <p>📍 {t('con1')}</p>
+  <p>💵 {t('con2')}</p>
+  <p>🛵 {t('con3')}</p>
+  <p>➕ {t('con4')}</p>
+  <p>🛒 {t('con5')}</p>
+</div>
       <h1 className="section-title">{t('yourCart')}</h1>
 
       {/* On mobile: stack vertically. On desktop: 3-col grid */}

@@ -44,6 +44,14 @@ const translations = {
     contactUs:'Contact Us', phone:'Phone', email:'Email', address:'Address',
     allRightsReserved:'All rights reserved.',
     firstName:'First Name',lastName:'Last Name',
+    Conditiontitile:'Conditions',
+     con1:'Deliveries are only available up to 5km from Buttala town.',
+     con2:'Cash on delivery is available.',
+     con3:'Delivery charges for less than 2km are only 200.',
+     con4:'For every 1km more than 2km, an additional Rs. 50 will be charged.',
+     con5:'Delivery facility is provided for orders above Rs. 2500 only.',
+      
+
   },
   si: {
     home:'මුල් පිටුව', trackOrder:'ඔබේ ඇණව්ම්', cart:'කූඩය', logout:'පිටවීම',
@@ -90,6 +98,12 @@ const translations = {
     contactUs:'අප හා සම්බන්ධ වන්න', phone:'දුරකථනය', email:'ඊමේල්', address:'ලිපිනය',
     allRightsReserved:'සියලු හිමිකම් ඇවිරිණි.',
     firstName:'මුල් නම',
+    Conditiontitile:'සැලකිය යුතුයි!',
+    con1:'බුත්තල නගරයේ සිට 5kmක් දක්වා පමණක් deliver කරනු ලබයි.',
+    con2:'Cash on delivery වේ.',
+    con3:'2km කට වඩා අඩු deliver සදහා අයකිරීම රු.200ක් පමණි.',
+    con4:'2kmට වඩා වැඩිවන සැම කිලෝමීටර් 1ක් සදහාම අමතරව රු.50ක මුදලක් අය කරනු ලබයි.',
+    con5:'Deliver පහසුකම ලබා දෙන්නේ රු.2500/= ට වැඩි ඇණවුම් සදහා පමණි.',
   },
 };
 export default translations;
