@@ -67,7 +67,7 @@ const handleLogout = () => {
             </button>
 
             {isLoggedIn ? (
-              <div className="hidden md:flex items-center gap-3">
+              <div className="flex items-center gap-3">
                 <span className="text-sm text-gray-600 font-medium">
         Hi, {user.firstName}
       </span>
