@@ -1,6 +1,6 @@
 // src/pages/admin/AdminOrders.jsx
 import { useEffect, useState } from 'react';
-import { Loader2, RefreshCw } from 'lucide-react';
+import { Loader2, RefreshCw, MapPin } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { adminApi } from '../../services/api.js';
 import { useLang } from '../../context/LanguageContext.jsx';
@@ -14,8 +14,8 @@ export default function AdminOrders() {
   const [loading,     setLoading]     = useState(true);
   const [updating,    setUpdating]    = useState(null);
   const [filter,      setFilter]      = useState('all');
-  const [rejectingId, setRejectingId] = useState(null); // ← NEW: which order is being rejected
-  const [rejectMsg,   setRejectMsg]   = useState('');   // ← NEW: rejection message text
+  const [rejectingId, setRejectingId] = useState(null);
+  const [rejectMsg,   setRejectMsg]   = useState('');
 
   const load = () => {
     setLoading(true);
@@ -26,9 +26,8 @@ export default function AdminOrders() {
   const handleStatus = async (id, status, rejectionMsg = '') => {
     setUpdating(id);
     try {
-      await adminApi.updateStatus(id, status, rejectionMsg); // ← NEW: pass rejectionMsg
+      await adminApi.updateStatus(id, status, rejectionMsg);
       toast.success(lang === 'si' ? 'තත්වය යාවත්කාලීන කළා' : 'Status updated');
-      // ← NEW: reset rejection state after success
       setRejectingId(null);
       setRejectMsg('');
       load();
@@ -36,10 +35,18 @@ export default function AdminOrders() {
     finally { setUpdating(null); }
   };
 
-  // ← NEW: cancel rejection input
   const cancelReject = () => {
     setRejectingId(null);
     setRejectMsg('');
+  };
+
+  // ── Open customer location in Google Maps in a new tab ─────────────────────
+  const openMap = (location) => {
+    window.open(
+      `https://www.google.com/maps?q=${location.lat},${location.lng}`,
+      '_blank',
+      'noopener,noreferrer'
+    );
   };
 
   const fmt      = (iso) => new Date(iso).toLocaleString(lang === 'si' ? 'si-LK' : 'en-LK');
@@ -99,12 +106,27 @@ export default function AdminOrders() {
               {/* Customer info */}
               <div className="bg-blue-50 rounded-xl p-3 mb-3 text-sm space-y-1">
                 <p><span className="font-semibold text-gray-600">{t('customerPhone')}:</span> {order.userPhone}</p>
-                 {order.customerName && (
-    <p><span className="font-semibold text-gray-600">Customer Name:</span> {order.customerName}</p>
-  )}
+                {order.customerName && (
+                  <p><span className="font-semibold text-gray-600">Customer Name:</span> {order.customerName}</p>
+                )}
                 <p><span className="font-semibold text-gray-600">{t('yourPhone')}:</span> {order.phone}</p>
                 <p><span className="font-semibold text-gray-600">{t('deliveryAddr')}:</span> {order.address}</p>
-                {order.message && <p><span className="font-semibold text-gray-600">{t('customerMsg')}:</span> {order.message}</p>}
+                {order.message && (
+                  <p><span className="font-semibold text-gray-600">{t('customerMsg')}:</span> {order.message}</p>
+                )}
+
+                {/* ── View on Map button — only shown if customer shared location ── */}
+                {order.location?.lat != null && order.location?.lng != null && (
+                  <div className="pt-1">
+                    <button
+                      onClick={() => openMap(order.location)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-500 hover:bg-green-600 active:scale-95 text-white text-xs font-semibold transition-all"
+                    >
+                      <MapPin size={13}/>
+                      {lang === 'si' ? 'සිතියමේ බලන්න' : 'View on Map'}
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Items */}
@@ -124,7 +146,7 @@ export default function AdminOrders() {
                 </div>
               </div>
 
-              {/* ── NEW: show existing rejection message if already rejected ── */}
+              {/* Existing rejection message */}
               {order.status === 'rejected' && order.rejectionMsg && (
                 <div className="bg-red-50 border border-red-200 rounded-xl p-3 mb-4">
                   <p className="text-xs font-semibold text-red-600 mb-1">
@@ -138,7 +160,6 @@ export default function AdminOrders() {
               <div>
                 <p className="text-xs font-semibold text-gray-500 mb-2">{t('updateStatus')}</p>
 
-                {/* ── NEW: rejection input — shown when admin clicks Reject ── */}
                 {rejectingId === order._id ? (
                   <div className="space-y-2">
                     <input
@@ -166,7 +187,6 @@ export default function AdminOrders() {
                     </div>
                   </div>
                 ) : (
-                  /* Normal status buttons */
                   <div className="flex gap-2 flex-wrap">
                     {[
                       { s: 'confirmed', cls: 'bg-blue-500  hover:bg-blue-600'  },
@@ -177,7 +197,6 @@ export default function AdminOrders() {
                         disabled={order.status === s || updating === order._id}
                         onClick={() => {
                           if (s === 'rejected') {
-                            // ← NEW: show input instead of immediately rejecting
                             setRejectingId(order._id);
                             setRejectMsg('');
                           } else {
