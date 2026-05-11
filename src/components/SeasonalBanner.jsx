@@ -29,7 +29,7 @@
 const LEFT_IMAGE  = '/seasonal/left.png';   // ← change this
 const RIGHT_IMAGE = '/seasonal/right.png';  // ← change this
 
-const SEASONAL_TEXT = 'සුබ අලුත් අවුරුද්දක් වේවා..! මේ උත්සව සමයේ විශේෂ වට්ටම්..!';
+const SEASONAL_TEXT = 'ඔබ සැමට පින්බර වෙසක් මංගල්‍යයක් වේවා!';
 const SEASONAL_FONT = 'Noto Serif Sinhala'; // Dearana-style serif Sinhala font
 // ══════════════════════════════════════════════════════════════════
 
