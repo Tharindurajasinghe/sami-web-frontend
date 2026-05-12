@@ -72,4 +72,23 @@ export const adminApi = {
 
   findUser:   (phone) => api.get(`/admin/users?phone=${encodeURIComponent(phone)}`),
   deleteUser: (phone) => api.delete(`/admin/users/${encodeURIComponent(phone)}`),
+
+   // ── Custom requests (item list feature) ───────────────────────────────────
+  getCustomRequests:      ()                   => api.get('/custom-requests'),
+  updateCustomReqStatus:  (id, status, adminMsg = '') =>
+    api.patch(`/custom-requests/${id}/status`, { status, adminMsg }),
+};
+
+// ── Custom requests — user-facing ─────────────────────────────────────────────
+export const customRequestApi = {
+  submit:  (itemList, address, phone) =>
+    api.post('/custom-requests', { itemList, address, phone }),
+  getMine: () => api.get('/custom-requests/mine'),
+};
+
+// ── Banner ────────────────────────────────────────────────────────────────────
+export const bannerApi = {
+  get:    ()              => api.get('/banner'),
+  update: (text, leftImage, rightImage) =>
+    api.put('/banner', { text, leftImage, rightImage }),
 };

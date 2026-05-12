@@ -8,9 +8,20 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const saved = localStorage.getItem('shop_user');
-    if (saved) try { setUser(JSON.parse(saved)); } catch {}
-    setLoading(false);
+     const saved = localStorage.getItem('shop_user');
+  const token = localStorage.getItem('shop_token');
+  if (saved && token) {
+    try {
+      const parsed = JSON.parse(saved);
+      // If admin, verify the token is still valid with your server
+      // If server rejects it, clear the session
+      setUser(parsed);
+    } catch {
+      localStorage.removeItem('shop_user');
+      localStorage.removeItem('shop_token');
+    }
+  }
+  setLoading(false);
   }, []);
 
   const saveSession = (userData, token) => {

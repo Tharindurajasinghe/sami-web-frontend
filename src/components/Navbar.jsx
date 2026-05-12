@@ -4,51 +4,53 @@ import { ShoppingCart, Home, Package, LogOut, Globe, LogIn } from 'lucide-react'
 import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import { useLang } from '../context/LanguageContext.jsx';
+import { useLocation } from 'react-router-dom';
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
+  const { user, loading, logout } = useAuth();
   const { count } = useCart();
   const { lang, toggleLang, t } = useLang();
   const navigate = useNavigate();
 
-  // Hide navbar entirely for admin (admin has its own top bar)
-  if (user?.isAdmin) return null;
-const handleLogout = () => {
-  const msg = lang === 'si'
-    ? 'ඔබට සැබවින්ම පිටවීමට අවශ්‍යද?'
-    : 'Are you sure you want to logout?';
-  if (window.confirm(msg)) {
-    logout();
-    navigate('/');
-  }
-};
-  
-
+  // Fix 1: all variables declared before any early return
   const isLoggedIn = !!user;
+
+  const handleLogout = () => {
+    const msg = lang === 'si'
+      ? 'ඔබට සැබවින්ම පිටවීමට අවශ්‍යද?'
+      : 'Are you sure you want to logout?';
+    if (window.confirm(msg)) { logout(); navigate('/'); }
+  };
+
+  // Fix 2: render nothing while auth is loading — prevents the blank flash
+  if (loading) return (
+  <nav className="bg-white shadow-sm border-b border-orange-100 sticky top-0 z-50 h-16" />
+);
+
+  // Admin has its own top bar — no navbar needed
+  const location = useLocation();
+if (location.pathname.startsWith('/admin')) return null;
 
   return (
     <>
-      {/* ── Desktop navbar ───────────────────────────────────────── */}
+      {/* ── Desktop navbar ─────────────────────────────────────────── */}
       <nav className="bg-white shadow-sm border-b border-orange-100 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
 
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">D</span>
+              <span className="text-white font-bold text-sm">S</span>
             </div>
             <span className="font-bold text-gray-800 text-lg hidden sm:block">
               {lang === 'si' ? 'වෙළඳසැල' : 'Shop'}
             </span>
           </Link>
 
-          {/* Desktop links */}
           <div className="hidden md:flex items-center gap-1">
             <NavLink to="/" icon={<Home size={16}/>} label={t('home')}/>
             {isLoggedIn && (
               <NavLink to="/track" icon={<Package size={16}/>} label={t('trackOrder')}/>
             )}
-            {/* Cart — always visible, clicking prompts login if guest */}
             <Link to={isLoggedIn ? '/cart' : '/login'}
               className="relative flex items-center gap-1.5 px-3 py-2 rounded-xl text-gray-600 hover:bg-orange-50 hover:text-orange-600 transition-colors font-medium text-sm">
               <ShoppingCart size={16}/>
@@ -59,23 +61,16 @@ const handleLogout = () => {
             </Link>
           </div>
 
-          {/* Right side actions */}
           <div className="flex items-center gap-2">
             <button onClick={toggleLang}
               className="flex items-center gap-1 px-3 py-2 rounded-xl text-gray-600 hover:bg-orange-50 hover:text-orange-600 transition-colors text-sm font-semibold">
               <Globe size={16}/><span>{lang === 'en' ? 'සිං' : 'EN'}</span>
             </button>
-
             {isLoggedIn ? (
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-600 font-medium">
-        Hi, {user.firstName}
-      </span>
               <button onClick={handleLogout}
                 className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-xl text-gray-600 hover:bg-red-50 hover:text-red-500 transition-colors text-sm font-medium">
                 <LogOut size={16}/><span>{t('logout')}</span>
               </button>
-              </div>
             ) : (
               <Link to="/login"
                 className="hidden md:flex items-center gap-1.5 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white transition-colors text-sm font-semibold">
@@ -86,13 +81,10 @@ const handleLogout = () => {
         </div>
       </nav>
 
-      {/* ── Mobile bottom nav ─────────────────────────────────────── */}
+      {/* ── Mobile bottom nav ──────────────────────────────────────── */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-orange-100 z-50 shadow-lg">
         <div className="flex items-center justify-around h-16">
-
           <MobileLink to="/" icon={<Home size={22}/>} label={t('home')}/>
-
-          {/* Cart */}
           <Link to={isLoggedIn ? '/cart' : '/login'}
             className="flex flex-col items-center gap-0.5 text-gray-500 px-3 py-1">
             <div className="relative">
@@ -103,7 +95,6 @@ const handleLogout = () => {
             </div>
             <span className="text-xs">{t('cart')}</span>
           </Link>
-
           {isLoggedIn ? (
             <>
               <MobileLink to="/track" icon={<Package size={22}/>} label={t('trackOrder')}/>
@@ -118,7 +109,6 @@ const handleLogout = () => {
               <LogIn size={22}/><span className="text-xs">{t('loginBtn')}</span>
             </Link>
           )}
-
         </div>
       </nav>
     </>

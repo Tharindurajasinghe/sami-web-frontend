@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext.jsx';
 import Navbar  from './components/Navbar.jsx';
 import Footer  from './components/Footer.jsx';
+
 import LoginPage         from './pages/LoginPage.jsx';
 import RegisterPage      from './pages/RegisterPage.jsx';
 import HomePage          from './pages/HomePage.jsx';
@@ -12,9 +13,7 @@ import CheckoutPage      from './pages/CheckoutPage.jsx';
 import TrackOrderPage    from './pages/TrackOrderPage.jsx';
 import AdminLoginPage    from './pages/admin/AdminLoginPage.jsx';
 import AdminDashboard    from './pages/admin/AdminDashboard.jsx';
-import ScrollToTop from './components/ScrollToTop.jsx';
 
-// Spinner shown while auth state is loading
 function Spinner() {
   return (
     <div className="min-h-screen flex items-center justify-center">
@@ -23,58 +22,59 @@ function Spinner() {
   );
 }
 
-// Only for Checkout — requires login
-// Saves the page the user tried to visit so we can redirect back after login
+// Requires login — used for /checkout
 function LoginRequired({ children }) {
   const { user, loading } = useAuth();
   const location = useLocation();
-  if (loading)          return <Spinner/>;
-  if (!user)            return <Navigate to="/login" state={{ from: location }} replace/>;
-  if (user.isAdmin)     return <Navigate to="/admin" replace/>;
+  if (loading)       return <Spinner/>;
+  if (!user)         return <Navigate to="/login" state={{ from: location }} replace/>;
+  if (user.isAdmin)  return <Navigate to="/admin" replace/>;
   return children;
 }
 
-// Admin pages guard
+// Fix: AdminRoute now returns a Spinner instead of null while loading.
+// Returning null caused the entire page (including Navbar + Footer) to
+// go blank for a moment on every page load, because it coincided with
+// the Navbar also mis-rendering during the auth loading flash.
 function AdminRoute({ children }) {
   const { user, loading } = useAuth();
-  if (loading) return null;
+  if (loading)        return <Spinner/>;
   if (!user?.isAdmin) return <Navigate to="/admin/login" replace/>;
   return children;
 }
 
-// Redirect logged-in users away from login/register pages
+// Redirect logged-in users away from login/register
 function GuestOnly({ children }) {
   const { user, loading } = useAuth();
-  if (loading) return <Spinner/>;
+  if (loading)       return <Spinner/>;
   if (user?.isAdmin) return <Navigate to="/admin" replace/>;
-  if (user)          return <Navigate to="/"      replace/>;
+  if (user)          return <Navigate to="/" replace/>;
   return children;
 }
 
 export default function App() {
   return (
     <>
-       <ScrollToTop/> 
       <Navbar/>
       <Routes>
-        {/* ── Fully public — no login needed ── */}
+        {/* Public */}
         <Route path="/"             element={<HomePage/>}/>
         <Route path="/category/:id" element={<CategoryItemsPage/>}/>
-        <Route path="/cart"         element={<CartPage/>}/>        {/* ← now public */}
-        <Route path="/track"        element={<TrackOrderPage/>}/>  {/* ← already public */}
+        <Route path="/cart"         element={<CartPage/>}/>
+        <Route path="/track"        element={<TrackOrderPage/>}/>
 
-        {/* ── Guest only — redirect away if already logged in ── */}
+        {/* Guest only */}
         <Route path="/login"    element={<GuestOnly><LoginPage/></GuestOnly>}/>
         <Route path="/register" element={<GuestOnly><RegisterPage/></GuestOnly>}/>
 
-        {/* ── Login required — only checkout needs login ── */}
+        {/* Login required */}
         <Route path="/checkout" element={<LoginRequired><CheckoutPage/></LoginRequired>}/>
 
-        {/* ── Admin ── */}
+        {/* Admin */}
         <Route path="/admin/login" element={<AdminLoginPage/>}/>
         <Route path="/admin"       element={<AdminRoute><AdminDashboard/></AdminRoute>}/>
 
-        {/* ── Fallback ── */}
+        {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace/>}/>
       </Routes>
       <Footer/>

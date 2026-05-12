@@ -2,11 +2,13 @@
 import { Phone, Mail, MapPin, Facebook } from 'lucide-react';
 import { useLang } from '../context/LanguageContext.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
+import { useLocation } from 'react-router-dom';
 
 export default function Footer() {
   const { t } = useLang();
   const { user } = useAuth();
-  if (user?.isAdmin) return null;
+  const location = useLocation();
+if (location.pathname.startsWith('/admin')) return null;
   return (
     <footer className="bg-gray-800 text-gray-300 mt-12">
       <div className="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-2 gap-8">
