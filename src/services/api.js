@@ -81,8 +81,8 @@ export const adminApi = {
 
 // ── Custom requests — user-facing ─────────────────────────────────────────────
 export const customRequestApi = {
-  submit:  (itemList, address, phone) =>
-    api.post('/custom-requests', { itemList, address, phone }),
+  submit:  (itemList, address, phone, location) =>
+    api.post('/custom-requests', { itemList, address, phone, location }),
   getMine: () => api.get('/custom-requests/mine'),
 };
 

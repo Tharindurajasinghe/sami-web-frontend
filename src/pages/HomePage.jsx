@@ -1,7 +1,7 @@
 // src/pages/HomePage.jsx
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, ClipboardList, X, MapPin, Phone, Send } from 'lucide-react';
+import { Loader2, ClipboardList, X, MapPin, Phone, Send,Navigation, CheckCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { categoryApi }      from '../services/api.js';
 import { customRequestApi } from '../services/api.js';
@@ -25,6 +25,11 @@ export default function HomePage() {
   const [phone,     setPhone]     = useState('');
   const [sending,   setSending]   = useState(false);
 
+   // ── Location state — same pattern as CheckoutPage ──────────────────────
+  const [location,   setLocation]   = useState(null);
+  const [locLoading, setLocLoading] = useState(false);
+  const [locError,   setLocError]   = useState('');
+
   useEffect(() => {
     categoryApi.getAll()
       .then(setCategories)
@@ -42,7 +47,54 @@ export default function HomePage() {
     setItemList('');
     setAddress('');
     setPhone(user?.phone || '');
+    setLocation(null);
+     setLocError('');
     setShowModal(true);
+  };
+
+  // ── GPS — exact same logic as CheckoutPage ─────────────────────────────
+  const handleGetLocation = () => {
+    if (location) return;
+    if (!navigator.geolocation) {
+      setLocError(
+        lang === 'si'
+          ? 'ඔබේ දුරකථනය ස්ථාන සේවා සඳහා සහය නොදක්වයි.'
+          : 'Your device does not support location services.'
+      );
+      return;
+    }
+    setLocLoading(true);
+    setLocError('');
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        setLocLoading(false);
+        toast.success(lang === 'si' ? 'ස්ථානය සාර්ථකව ලැබිණ!' : 'Location captured successfully!');
+      },
+      (err) => {
+        setLocLoading(false);
+        if (err.code === err.PERMISSION_DENIED) {
+          setLocError(
+            lang === 'si'
+              ? 'ස්ථාන අවසරය ප්‍රතික්ෂේප කළා. දුරකථනයේ සිටුවම් වලින් ස්ථාන සේවා සක්‍රිය කරන්න.'
+              : 'Location permission denied. Please enable location services in your phone settings.'
+          );
+        } else if (err.code === err.POSITION_UNAVAILABLE) {
+          setLocError(
+            lang === 'si'
+              ? 'ස්ථානය හඳුනාගත නොහැකි විය. නැවත උත්සාහ කරන්න.'
+              : 'Location unavailable. Please try again.'
+          );
+        } else {
+          setLocError(
+            lang === 'si'
+              ? 'ස්ථානය ලබාගැනීමේ දෝෂයකි. නැවත උත්සාහ කරන්න.'
+              : 'Could not get location. Please try again.'
+          );
+        }
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
   };
 
   const handleSend = async () => {
@@ -173,6 +225,56 @@ export default function HomePage() {
                 />
               </div>
             </div>
+
+            {/* ── GPS Location — same pattern as CheckoutPage ─────────── */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {lang === 'si' ? 'ස්ථානය (අමතර)' : 'Location (optional)'}
+                </label>
+ 
+                {location ? (
+                  <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-green-50 border-2 border-green-400 text-green-700 font-semibold text-sm">
+                    <CheckCheck size={18} className="shrink-0"/>
+                    <span>
+                      {lang === 'si' ? 'ස්ථානය සාර්ථකව ලැබිණ!' : 'Location captured!'}
+                    </span>
+                    <span className="ml-auto text-xs text-green-500 font-normal">
+                      {location.lat.toFixed(4)}, {location.lng.toFixed(4)}
+                    </span>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleGetLocation}
+                    disabled={locLoading}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 border-dashed border-orange-300 bg-orange-50 text-orange-600 font-semibold text-sm hover:bg-orange-100 hover:border-orange-400 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    {locLoading ? (
+                      <>
+                        <Loader2 size={18} className="animate-spin shrink-0"/>
+                        {lang === 'si' ? 'ස්ථානය ලබාගනිමින්...' : 'Getting location...'}
+                      </>
+                    ) : (
+                      <>
+                        <Navigation size={18} className="shrink-0"/>
+                        {lang === 'si' ? '📍 මගේ ස්ථානය යොදන්න' : '📍 Share My Location'}
+                      </>
+                    )}
+                  </button>
+                )}
+ 
+                {locError && (
+                  <p className="mt-2 text-xs text-red-500 leading-relaxed">{locError}</p>
+                )}
+                {!location && !locError && (
+                  <p className="mt-1.5 text-xs text-gray-400">
+                    {lang === 'si'
+                      ? 'ඔබේ නිවසේ ස්ථානය යවන්නෙ නම් ක්ලික් කරන්න. නිශ්චිත ලිපිනයක් ඇත්නම් ඉහත ලිව්ව ඇති.'
+                      : 'Tap to share your GPS location to help us find you. Optional — only needed if your address is hard to find.'}
+                  </p>
+                )}
+              </div>
+ 
 
             {/* Modal footer */}
             <div className="px-5 py-4 border-t border-orange-100 flex gap-3">

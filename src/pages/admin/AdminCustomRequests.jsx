@@ -118,6 +118,17 @@ export default function AdminCustomRequests() {
                 <p><span className="font-semibold text-gray-600">{t('customerPhone')}:</span> {req.userPhone}</p>
                 {req.phone    && <p><span className="font-semibold text-gray-600">{t('yourPhone')}:</span> {req.phone}</p>}
                 {req.address  && <p><span className="font-semibold text-gray-600">{t('deliveryAddr')}:</span> {req.address}</p>}
+                {req.location?.lat && req.location?.lng && (
+                  <p><span className="font-semibold text-gray-600">
+                    {lang === 'si' ? 'ස්ථානය:' : 'Location:'}
+                  </span>{' '}
+                    <a href={`https://www.google.com/maps?q=${req.location.lat},${req.location.lng}`}
+                      target="_blank" rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline text-sm font-medium">
+                      📍 {lang === 'si' ? 'Google Maps හි බලන්න' : 'View on Google Maps'}
+                    </a>
+                  </p>
+                )}
               </div>
 
               {/* Item list */}
