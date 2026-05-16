@@ -200,7 +200,7 @@ export default function HomePage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   <MapPin size={13} className="inline mr-1 text-gray-400"/>
-                  {lang === 'si' ? 'ලිපිනය (අමතර)' : 'Delivery Address (optional)'}
+                  {lang === 'si' ? 'ලිපිනය ' : 'Delivery Address (optional)'}
                 </label>
                 <textarea
                   rows={2}
@@ -215,7 +215,7 @@ export default function HomePage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   <Phone size={13} className="inline mr-1 text-gray-400"/>
-                  {lang === 'si' ? 'දුරකථන අංකය (අමතර)' : 'Phone Number (optional)'}
+                  {lang === 'si' ? 'දුරකථන අංකය' : 'Phone Number (optional)'}
                 </label>
                 <input
                   type="tel"
