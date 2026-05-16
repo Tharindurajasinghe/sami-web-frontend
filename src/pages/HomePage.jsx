@@ -190,8 +190,8 @@ export default function HomePage() {
                   className="input-field resize-none text-sm"
                   placeholder={
                     lang === 'si'
-                      ? 'උදා:\n2kg සහල්\n1 පොල් තෙල් බෝතලය\nකිරි පැකට් 3\nපාන් 1'
-                      : 'e.g.\n2kg rice\n1 bottle coconut oil\n3 milk packets\n1 bread loaf'
+                      ? 'ඔබගේ බඩු ලයිස්තුව මෙහි ඇතුළත් කරන්න.\nඋදා:\n2kg සහල්\nපොල් තෙල් බෝතලය\n*Deliver පහසුකම ලබා දෙන්නේ Rs.  2000/= ට වැඩි ඇණවුම් සදහා පමණි.'
+                      : 'e.g.\n2kg rice\n1 bottle coconut oil\n*Delivery facilities are provided only for orders above Rs. 2000/=.'
                   }
                 />
               </div>
