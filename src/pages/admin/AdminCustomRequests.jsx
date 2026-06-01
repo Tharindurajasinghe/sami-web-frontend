@@ -1,10 +1,11 @@
 // src/pages/admin/AdminCustomRequests.jsx
 import { useEffect, useState } from 'react';
-import { Loader2, RefreshCw, ClipboardList } from 'lucide-react';
+import { Loader2, RefreshCw, ClipboardList, Printer } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { adminApi } from '../../services/api.js';
 import { useLang } from '../../context/LanguageContext.jsx';
 import OrderStatusBadge from '../../components/OrderStatusBadge.jsx';
+import ThermalBill      from '../../components/ThermalBill.jsx';
 
 const STATUSES = ['pending', 'confirmed', 'rejected', 'complete'];
 
@@ -18,7 +19,8 @@ export default function AdminCustomRequests() {
   // msgId = which request has the message input open; msgText = typed text
   const [msgId,      setMsgId]      = useState(null);
   const [msgText,    setMsgText]    = useState('');
-  const [pendingStatus, setPendingStatus] = useState(null); // status waiting for msg confirm
+  const [pendingStatus, setPendingStatus] = useState(null);
+  const [printReq,      setPrintReq]      = useState(null);  // request to print // status waiting for msg confirm
 
   const load = () => {
     setLoading(true);
@@ -105,7 +107,16 @@ export default function AdminCustomRequests() {
                   <p className="font-mono text-sm text-gray-700">{req._id}</p>
                   <p className="text-xs text-gray-400 mt-1">{fmt(req.createdAt)}</p>
                 </div>
-                <OrderStatusBadge status={req.status}/>
+                <div className="flex items-center gap-2">
+                  <OrderStatusBadge status={req.status}/>
+                  <button
+                    onClick={() => setPrintReq(req)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-900 text-white text-xs font-semibold transition-colors"
+                  >
+                    <Printer size={13}/>
+                    {lang === 'si' ? 'බිල්' : 'Print Bill'}
+                  </button>
+                </div>
               </div>
 
               {/* Customer info */}
@@ -118,17 +129,6 @@ export default function AdminCustomRequests() {
                 <p><span className="font-semibold text-gray-600">{t('customerPhone')}:</span> {req.userPhone}</p>
                 {req.phone    && <p><span className="font-semibold text-gray-600">{t('yourPhone')}:</span> {req.phone}</p>}
                 {req.address  && <p><span className="font-semibold text-gray-600">{t('deliveryAddr')}:</span> {req.address}</p>}
-                {req.location?.lat && req.location?.lng && (
-                  <p><span className="font-semibold text-gray-600">
-                    {lang === 'si' ? 'ස්ථානය:' : 'Location:'}
-                  </span>{' '}
-                    <a href={`https://www.google.com/maps?q=${req.location.lat},${req.location.lng}`}
-                      target="_blank" rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline text-sm font-medium">
-                      📍 {lang === 'si' ? 'Google Maps හි බලන්න' : 'View on Google Maps'}
-                    </a>
-                  </p>
-                )}
               </div>
 
               {/* Item list */}
@@ -208,6 +208,15 @@ export default function AdminCustomRequests() {
             </div>
           ))}
         </div>
+      )}
+      {/* Thermal bill print modal */}
+      {printReq && (
+        <ThermalBill
+          data={printReq}
+          type="list"
+          lang={lang}
+          onClose={() => setPrintReq(null)}
+        />
       )}
     </div>
   );

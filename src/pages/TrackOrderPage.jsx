@@ -81,7 +81,7 @@ export default function TrackOrderPage() {
                 <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                   <div>
                     <p className="text-xs text-gray-400">{t('orderId')}</p>
-                    <p className="font-mono text-sm text-gray-700">{order._id}</p>
+                    <p className="font-mono text-sm text-gray-700 font-bold text-orange-600">{order.orderId || order._id}</p>
                     <p className="text-xs text-gray-400 mt-1">{fmt(order.createdAt)}</p>
                   </div>
                   <OrderStatusBadge status={order.status}/>

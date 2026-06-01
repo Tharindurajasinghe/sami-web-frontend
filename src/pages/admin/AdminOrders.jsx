@@ -1,10 +1,11 @@
 // src/pages/admin/AdminOrders.jsx
 import { useEffect, useState } from 'react';
-import { Loader2, RefreshCw, MapPin } from 'lucide-react';
+import { Loader2, RefreshCw, MapPin, Printer } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { adminApi } from '../../services/api.js';
 import { useLang } from '../../context/LanguageContext.jsx';
 import OrderStatusBadge from '../../components/OrderStatusBadge.jsx';
+import ThermalBill      from '../../components/ThermalBill.jsx';
 
 const STATUSES = ['pending', 'confirmed', 'rejected', 'complete'];
 
@@ -16,6 +17,7 @@ export default function AdminOrders() {
   const [filter,      setFilter]      = useState('all');
   const [rejectingId, setRejectingId] = useState(null);
   const [rejectMsg,   setRejectMsg]   = useState('');
+  const [printOrder,  setPrintOrder]  = useState(null);  // order to print
 
   const load = () => {
     setLoading(true);
@@ -97,10 +99,19 @@ export default function AdminOrders() {
               <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
                 <div>
                   <p className="text-xs text-gray-400">{t('orderId')}</p>
-                  <p className="font-mono text-sm text-gray-700">{order._id}</p>
+                  <p className="font-mono text-sm text-gray-700 font-bold text-orange-600">{order.orderId || order._id}</p>
                   <p className="text-xs text-gray-400 mt-1">{fmt(order.createdAt)}</p>
                 </div>
-                <OrderStatusBadge status={order.status}/>
+                <div className="flex items-center gap-2">
+                  <OrderStatusBadge status={order.status}/>
+                  <button
+                    onClick={() => setPrintOrder(order)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-900 text-white text-xs font-semibold transition-colors"
+                  >
+                    <Printer size={13}/>
+                    {lang === 'si' ? 'බිල්' : 'Print Bill'}
+                  </button>
+                </div>
               </div>
 
               {/* Customer info */}
@@ -214,6 +225,15 @@ export default function AdminOrders() {
             </div>
           ))}
         </div>
+      )}
+      {/* Thermal bill print modal */}
+      {printOrder && (
+        <ThermalBill
+          data={printOrder}
+          type="order"
+          lang={lang}
+          onClose={() => setPrintOrder(null)}
+        />
       )}
     </div>
   );
