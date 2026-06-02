@@ -243,6 +243,7 @@ export default function CheckoutPage() {
               )}
             </div>
 
+            
             {/* Place order button */}
             <button type="submit" disabled={loading} className="btn-primary w-full mt-3 py-3">
               {loading ? '...' : t('placeOrder')}

@@ -129,12 +129,24 @@ export default function CartPage() {
             <span>Rs. {total.toFixed(2)}</span>
           </div>
           <div><p className="text-xs p-2 text-gray-500 mt-1">* {t('del')}</p></div>
+
+          {total < 2500 && (
+          <div className="bg-red-50 border border-red-300 rounded-xl p-3 mb-3">
+          <p className="text-sm text-red-600 font-medium">
+          අවම ඇණවුම් වටිනාකම රු. 2500/= ට වඩා වැඩි විය යුතුය.
+         </p>
+         <p className="text-xs text-red-500 mt-1">
+         To checkout, the total value of the bill should be greater than Rs. 2500/=
+        </p>
+         </div>
+         )}
           
 
           {/* Checkout — login required */}
           {user ? (
             <button
               onClick={() => navigate('/checkout')}
+              disabled={total < 2500}
               className="btn-primary w-full py-3">
               {t('checkout')}
             </button>
