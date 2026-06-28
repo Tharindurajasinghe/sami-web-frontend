@@ -32,19 +32,17 @@ export const api = {
   delete: (path)        => request('DELETE', path),
 };
 
-// ── Auth ─────────────────────────────────────────────────────────────────────
+// ── Auth (admin only) ─────────────────────────────────────────────────────────
 export const authApi = {
-  register:   (phone, password,firstName, lastName) => api.post('/auth/register',    { phone, password,firstName, lastName  }),
-  login:      (phone, password) => api.post('/auth/login',       { phone, password }),
   adminLogin: (phone, password) => api.post('/auth/admin-login', { phone, password }),
 };
 
 // ── Categories ────────────────────────────────────────────────────────────────
 export const categoryApi = {
-  getAll:  ()                    => api.get('/categories'),
-  create:  (name, nameSi, image) => api.post('/categories', { name, nameSi, image }),
+  getAll:  ()                        => api.get('/categories'),
+  create:  (name, nameSi, image)     => api.post('/categories', { name, nameSi, image }),
   update:  (id, name, nameSi, image) => api.put(`/categories/${id}`, { name, nameSi, image }),
-  delete:  (id)                  => api.delete(`/categories/${id}`),
+  delete:  (id)                      => api.delete(`/categories/${id}`),
 };
 
 // ── Items ─────────────────────────────────────────────────────────────────────
@@ -58,37 +56,35 @@ export const itemApi = {
 
 // ── Orders ────────────────────────────────────────────────────────────────────
 export const orderApi = {
-  create:  (data) => api.post('/orders', data),
-  getMine: ()     => api.get('/orders/mine'),
+  create:     (data)    => api.post('/orders', data),
+  getByPhone: (phone)   => api.get(`/orders/by-phone?phone=${encodeURIComponent(phone)}`),
 };
 
 // ── Admin ─────────────────────────────────────────────────────────────────────
 export const adminApi = {
   getOrders: () => api.get('/admin/orders'),
 
-  // ← CHANGED: now accepts optional rejectionMsg (sent only when rejecting)
   updateStatus: (id, status, rejectionMsg = '') =>
     api.patch(`/admin/orders/${id}/status`, { status, rejectionMsg }),
 
   findUser:   (phone) => api.get(`/admin/users?phone=${encodeURIComponent(phone)}`),
   deleteUser: (phone) => api.delete(`/admin/users/${encodeURIComponent(phone)}`),
 
-   // ── Custom requests (item list feature) ───────────────────────────────────
-  getCustomRequests:      ()                   => api.get('/custom-requests'),
-  updateCustomReqStatus:  (id, status, adminMsg = '') =>
+  getCustomRequests:     ()                        => api.get('/custom-requests'),
+  updateCustomReqStatus: (id, status, adminMsg = '') =>
     api.patch(`/custom-requests/${id}/status`, { status, adminMsg }),
 };
 
-// ── Custom requests — user-facing ─────────────────────────────────────────────
+// ── Custom requests — guest-facing ────────────────────────────────────────────
 export const customRequestApi = {
-  submit:  (itemList, address, phone, location) =>
-    api.post('/custom-requests', { itemList, address, phone, location }),
-  getMine: () => api.get('/custom-requests/mine'),
+  submit:     (itemList, address, phone, location, customerName) =>
+    api.post('/custom-requests', { itemList, address, phone, location, customerName }),
+  getByPhone: (phone) => api.get(`/custom-requests/by-phone?phone=${encodeURIComponent(phone)}`),
 };
 
 // ── Banner ────────────────────────────────────────────────────────────────────
 export const bannerApi = {
-  get:    ()              => api.get('/banner'),
+  get:    ()                                    => api.get('/banner'),
   update: (text, leftImage, rightImage) =>
     api.put('/banner', { text, leftImage, rightImage }),
 };

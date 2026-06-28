@@ -9,7 +9,7 @@ export function compressImage(file, maxSizeKB = 900) {
       img.onload = () => {
         const canvas = document.createElement('canvas');
         let { width, height } = img;
-        const MAX = 800;
+        const MAX = 400;
         if (width > MAX || height > MAX) {
           if (width > height) { height = Math.round((height * MAX) / width); width = MAX; }
           else { width = Math.round((width * MAX) / height); height = MAX; }

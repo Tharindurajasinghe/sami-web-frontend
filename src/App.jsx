@@ -4,8 +4,6 @@ import { useAuth } from './context/AuthContext.jsx';
 import Navbar  from './components/Navbar.jsx';
 import Footer  from './components/Footer.jsx';
 
-import LoginPage         from './pages/LoginPage.jsx';
-import RegisterPage      from './pages/RegisterPage.jsx';
 import HomePage          from './pages/HomePage.jsx';
 import CategoryItemsPage from './pages/CategoryItemsPage.jsx';
 import CartPage          from './pages/CartPage.jsx';
@@ -22,33 +20,10 @@ function Spinner() {
   );
 }
 
-// Requires login — used for /checkout
-function LoginRequired({ children }) {
-  const { user, loading } = useAuth();
-  const location = useLocation();
-  if (loading)       return <Spinner/>;
-  if (!user)         return <Navigate to="/login" state={{ from: location }} replace/>;
-  if (user.isAdmin)  return <Navigate to="/admin" replace/>;
-  return children;
-}
-
-// Fix: AdminRoute now returns a Spinner instead of null while loading.
-// Returning null caused the entire page (including Navbar + Footer) to
-// go blank for a moment on every page load, because it coincided with
-// the Navbar also mis-rendering during the auth loading flash.
 function AdminRoute({ children }) {
   const { user, loading } = useAuth();
   if (loading)        return <Spinner/>;
   if (!user?.isAdmin) return <Navigate to="/admin/login" replace/>;
-  return children;
-}
-
-// Redirect logged-in users away from login/register
-function GuestOnly({ children }) {
-  const { user, loading } = useAuth();
-  if (loading)       return <Spinner/>;
-  if (user?.isAdmin) return <Navigate to="/admin" replace/>;
-  if (user)          return <Navigate to="/" replace/>;
   return children;
 }
 
@@ -57,18 +32,12 @@ export default function App() {
     <>
       <Navbar/>
       <Routes>
-        {/* Public */}
+        {/* Public — no login required */}
         <Route path="/"             element={<HomePage/>}/>
         <Route path="/category/:id" element={<CategoryItemsPage/>}/>
         <Route path="/cart"         element={<CartPage/>}/>
+        <Route path="/checkout"     element={<CheckoutPage/>}/>
         <Route path="/track"        element={<TrackOrderPage/>}/>
-
-        {/* Guest only */}
-        <Route path="/login"    element={<GuestOnly><LoginPage/></GuestOnly>}/>
-        <Route path="/register" element={<GuestOnly><RegisterPage/></GuestOnly>}/>
-
-        {/* Login required */}
-        <Route path="/checkout" element={<LoginRequired><CheckoutPage/></LoginRequired>}/>
 
         {/* Admin */}
         <Route path="/admin/login" element={<AdminLoginPage/>}/>

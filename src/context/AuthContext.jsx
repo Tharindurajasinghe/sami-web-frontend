@@ -1,4 +1,5 @@
 // src/context/AuthContext.jsx
+// Only handles admin authentication. Customers no longer need to log in.
 import { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext(null);
@@ -8,20 +9,25 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-     const saved = localStorage.getItem('shop_user');
-  const token = localStorage.getItem('shop_token');
-  if (saved && token) {
-    try {
-      const parsed = JSON.parse(saved);
-      // If admin, verify the token is still valid with your server
-      // If server rejects it, clear the session
-      setUser(parsed);
-    } catch {
-      localStorage.removeItem('shop_user');
-      localStorage.removeItem('shop_token');
+    const saved = localStorage.getItem('shop_user');
+    const token = localStorage.getItem('shop_token');
+    if (saved && token) {
+      try {
+        const parsed = JSON.parse(saved);
+        // Only restore admin sessions
+        if (parsed?.isAdmin) {
+          setUser(parsed);
+        } else {
+          // Clear any old customer sessions
+          localStorage.removeItem('shop_user');
+          localStorage.removeItem('shop_token');
+        }
+      } catch {
+        localStorage.removeItem('shop_user');
+        localStorage.removeItem('shop_token');
+      }
     }
-  }
-  setLoading(false);
+    setLoading(false);
   }, []);
 
   const saveSession = (userData, token) => {

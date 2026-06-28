@@ -1,48 +1,36 @@
 // src/pages/CheckoutPage.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Phone, MessageSquare, CheckCircle, Loader2, Navigation, CheckCheck } from 'lucide-react';
+import { MapPin, Phone, MessageSquare, CheckCircle, Loader2, Navigation, CheckCheck, User } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { orderApi } from '../services/api.js';
 import { useCart } from '../context/CartContext.jsx';
-import { useAuth } from '../context/AuthContext.jsx';
 import { useLang } from '../context/LanguageContext.jsx';
 
 export default function CheckoutPage() {
   const { items, total, clearCart } = useCart();
-  const { user }    = useAuth();
   const { t, lang } = useLang();
   const navigate    = useNavigate();
 
+  const [name,    setName]    = useState('');
   const [address, setAddress] = useState('');
-  const [phone,   setPhone]   = useState(user?.phone || '');
+  const [phone,   setPhone]   = useState('');
   const [msg,     setMsg]     = useState('');
   const [loading, setLoading] = useState(false);
   const [placed,  setPlaced]  = useState(false);
 
   // ── Location state ─────────────────────────────────────────────────────────
-  const [location,     setLocation]     = useState(null);  // { lat, lng } or null
-  const [locLoading,   setLocLoading]   = useState(false); // spinner while getting GPS
-  const [locError,     setLocError]     = useState('');    // error message if denied
-
-  // ── Bug 1 fix: hard auth guard inside the page component ──────────────────
-  // App.jsx wraps /checkout in <LoginRequired> which handles the redirect,
-  // but this second guard protects against any edge-case where a guest
-  // reaches this component directly (e.g. stale render, SSR, direct URL).
-  if (!user) {
-    navigate('/login', { state: { from: { pathname: '/checkout' } }, replace: true });
-    return null;
-  }
+  const [location,   setLocation]   = useState(null);
+  const [locLoading, setLocLoading] = useState(false);
+  const [locError,   setLocError]   = useState('');
 
   // If cart is empty and order has not just been placed, go back to cart
   if (items.length === 0 && !placed) { navigate('/cart'); return null; }
 
   // ── Get GPS location ───────────────────────────────────────────────────────
   const handleGetLocation = () => {
-    // Already got location — button should be disabled, but guard anyway
     if (location) return;
 
-    // Browser doesn't support geolocation
     if (!navigator.geolocation) {
       setLocError(
         lang === 'si'
@@ -56,15 +44,11 @@ export default function CheckoutPage() {
     setLocError('');
 
     navigator.geolocation.getCurrentPosition(
-      // Success
       (pos) => {
         setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
         setLocLoading(false);
-        toast.success(
-          lang === 'si' ? 'ස්ථානය සාර්ථකව ලැබිණ!' : 'Location captured successfully!'
-        );
+        toast.success(lang === 'si' ? 'ස්ථානය සාර්ථකව ලැබිණ!' : 'Location captured successfully!');
       },
-      // Error
       (err) => {
         setLocLoading(false);
         if (err.code === err.PERMISSION_DENIED) {
@@ -87,7 +71,6 @@ export default function CheckoutPage() {
           );
         }
       },
-      // Options — high accuracy, 10 second timeout
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   };
@@ -95,17 +78,17 @@ export default function CheckoutPage() {
   // ── Place order ────────────────────────────────────────────────────────────
   const handleOrder = async (e) => {
     e.preventDefault();
+    if (!name.trim())    { toast.error(lang === 'si' ? 'නම ඇතුළත් කරන්න' : 'Name is required'); return; }
     if (!address.trim()) { toast.error(t('addressRequired')); return; }
     if (!phone.trim())   { toast.error(t('phoneRequired'));   return; }
     setLoading(true);
     try {
       await orderApi.create({
+        customerName: name.trim(),
         items: items.map(i => ({
           itemId: i._id,
           name:   i.name,
           nameSi: i.nameSi || '',
-          // Calculate final price manually — i.finalPrice is undefined when
-          // item comes from localStorage (Mongoose virtuals don't survive JSON)
           price: i.discount > 0
             ? +(i.price - (i.price * i.discount) / 100).toFixed(2)
             : i.price,
@@ -115,18 +98,12 @@ export default function CheckoutPage() {
         address:  address.trim(),
         phone:    phone.trim(),
         message:  msg.trim(),
-        location: location || null,   // ← send GPS coords or null if not shared
+        location: location || null,
       });
       clearCart();
       setPlaced(true);
     } catch (err) {
-      // If the token expired mid-session, send the user back to login
-      if (err.message === 'Not authenticated' || err.message === 'Invalid or expired token') {
-        toast.error('Your session expired. Please log in again.');
-        navigate('/login', { state: { from: { pathname: '/checkout' } }, replace: true });
-      } else {
-        toast.error(err.message);
-      }
+      toast.error(err.message);
     } finally { setLoading(false); }
   };
 
@@ -138,6 +115,11 @@ export default function CheckoutPage() {
         <h2 className="text-2xl font-bold text-gray-800 mb-2">{t('orderSuccess')}</h2>
         <p className="text-gray-500 mb-6">
           {lang === 'si' ? 'ඔබේ ඇණවුම ලැබී ඇත. ස්තූතියි!' : 'Your order has been received. Thank you!'}
+        </p>
+        <p className="text-sm text-gray-400 mb-6">
+          {lang === 'si'
+            ? 'ඔබේ ඇණවුම ලුහුබැදීම සඳහා ඔබේ දුරකථන අංකය භාවිත කරන්න.'
+            : 'Use your phone number to track your order status.'}
         </p>
         <div className="flex gap-3 justify-center flex-wrap">
           <button onClick={() => navigate('/track')} className="btn-primary">{t('trackOrder')}</button>
@@ -157,14 +139,16 @@ export default function CheckoutPage() {
         <div className="card p-4 md:p-6">
           <form onSubmit={handleOrder} className="space-y-4">
 
-            {/* Delivery address */}
+            {/* Customer name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('deliveryAddress')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {lang === 'si' ? 'ඔබේ නම' : 'Your Name'}
+              </label>
               <div className="relative">
-                <MapPin size={16} className="absolute left-3 top-3.5 text-gray-400"/>
-                <textarea value={address} onChange={e => setAddress(e.target.value)} rows={2}
-                  className="input-field pl-10 resize-none"
-                  placeholder={lang === 'si' ? 'ඔබේ ලිපිනය ලියන්න...' : 'Enter your delivery address...'}/>
+                <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"/>
+                <input type="text" value={name} onChange={e => setName(e.target.value)}
+                  className="input-field pl-10"
+                  placeholder={lang === 'si' ? 'ඔබේ නම ලියන්න...' : 'Enter your name...'}/>
               </div>
             </div>
 
@@ -174,7 +158,19 @@ export default function CheckoutPage() {
               <div className="relative">
                 <Phone size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"/>
                 <input type="tel" value={phone} onChange={e => setPhone(e.target.value)}
-                  className="input-field pl-10"/>
+                  className="input-field pl-10"
+                  placeholder="0771234567"/>
+              </div>
+            </div>
+
+            {/* Delivery address */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('deliveryAddress')}</label>
+              <div className="relative">
+                <MapPin size={16} className="absolute left-3 top-3.5 text-gray-400"/>
+                <textarea value={address} onChange={e => setAddress(e.target.value)} rows={2}
+                  className="input-field pl-10 resize-none"
+                  placeholder={lang === 'si' ? 'ඔබේ ලිපිනය ලියන්න...' : 'Enter your delivery address...'}/>
               </div>
             </div>
 
@@ -196,7 +192,6 @@ export default function CheckoutPage() {
               </label>
 
               {location ? (
-                // ── Success state — button locked, green ──
                 <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-green-50 border-2 border-green-400 text-green-700 font-semibold text-sm">
                   <CheckCheck size={18} className="shrink-0"/>
                   <span>
@@ -207,7 +202,6 @@ export default function CheckoutPage() {
                   </span>
                 </div>
               ) : (
-                // ── Idle / loading state ──
                 <button
                   type="button"
                   onClick={handleGetLocation}
@@ -228,12 +222,10 @@ export default function CheckoutPage() {
                 </button>
               )}
 
-              {/* Error message if permission denied or GPS failed */}
               {locError && (
                 <p className="mt-2 text-xs text-red-500 leading-relaxed">{locError}</p>
               )}
 
-              {/* Helper text */}
               {!location && !locError && (
                 <p className="mt-1.5 text-xs text-gray-400">
                   {lang === 'si'
@@ -243,7 +235,6 @@ export default function CheckoutPage() {
               )}
             </div>
 
-            
             {/* Place order button */}
             <button type="submit" disabled={loading} className="btn-primary w-full mt-3 py-3">
               {loading ? '...' : t('placeOrder')}

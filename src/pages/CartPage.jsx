@@ -1,9 +1,8 @@
 // src/pages/CartPage.jsx
 import { Link, useNavigate } from 'react-router-dom';
-import { Trash2, Plus, Minus, ShoppingBag, LogIn } from 'lucide-react';
+import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext.jsx';
 import { useLang } from '../context/LanguageContext.jsx';
-import { useAuth } from '../context/AuthContext.jsx';
 
 // Helper — calculate final price from plain object (localStorage loses virtuals)
 function calcFinalPrice(item) {
@@ -16,7 +15,6 @@ function calcFinalPrice(item) {
 export default function CartPage() {
   const { items, removeItem, updateQty, total } = useCart();
   const { t, lang } = useLang();
-  const { user } = useAuth();
   const navigate = useNavigate();
 
   if (items.length === 0) {
@@ -34,14 +32,14 @@ export default function CartPage() {
   return (
     <div className="main-content page-container">
       {/* Delivery info notice */}
-<div className="bg-orange-50 border border-orange-200 rounded-2xl p-4 mb-6 text-sm text-gray-700 space-y-1">
-  <h2>{t('Conditiontitile')}</h2>
-  <p>📍 {t('con1')}</p>
-  <p>💵 {t('con2')}</p>
-  <p>🛵 {t('con3')}</p>
-  <p>➕ {t('con4')}</p>
-  <p>🛒 {t('con5')}</p>
-</div>
+      <div className="bg-orange-50 border border-orange-200 rounded-2xl p-4 mb-6 text-sm text-gray-700 space-y-1">
+        <h2>{t('Conditiontitile')}</h2>
+        <p>📍 {t('con1')}</p>
+        <p>💵 {t('con2')}</p>
+        <p>🛵 {t('con3')}</p>
+        <p>➕ {t('con4')}</p>
+        <p>🛒 {t('con5')}</p>
+      </div>
       <h1 className="section-title">{t('yourCart')}</h1>
 
       {/* On mobile: stack vertically. On desktop: 3-col grid */}
@@ -103,7 +101,6 @@ export default function CartPage() {
         </div>
 
         {/* Order summary */}
-        {/* Mobile: normal flow below items. Desktop: sticky sidebar */}
         <div className="card p-4 md:p-5 h-fit md:sticky md:top-20">
           <h2 className="font-bold text-base md:text-lg text-gray-800 mb-3">{t('total')}</h2>
 
@@ -131,43 +128,23 @@ export default function CartPage() {
           <div><p className="text-xs p-2 text-gray-500 mt-1">* {t('del')}</p></div>
 
           {total < 2500 && (
-          <div className="bg-red-50 border border-red-300 rounded-xl p-3 mb-3">
-          <p className="text-sm text-red-600 font-medium">
-          අවම ඇණවුම් වටිනාකම රු. 2500/= ට වඩා වැඩි විය යුතුය.
-         </p>
-         <p className="text-xs text-red-500 mt-1">
-         To checkout, the total value of the bill should be greater than Rs. 2500/=
-        </p>
-         </div>
-         )}
-          
-
-          {/* Checkout — login required */}
-          {user ? (
-            <button
-              onClick={() => navigate('/checkout')}
-              disabled={total < 2500}
-              className="btn-primary w-full py-3">
-              {t('checkout')}
-            </button>
-          ) : (
-            <div>
-              <div className="bg-orange-50 border border-orange-200 rounded-xl p-3 mb-3 text-center">
-                <p className="text-sm text-gray-700 font-medium mb-0.5">
-                  ඇණවුම දැමීම සදහා ලොගින් විය යුතුය.
-                </p>
-                <p className="text-xs text-gray-500">
-                  To checkout you should be login to the system.
-                </p>
-              </div>
-              <Link
-                to="/login"
-                state={{ from: { pathname: '/checkout' } }}
-                className="btn-primary w-full flex items-center justify-center gap-2 py-3">
-                <LogIn size={16}/> {t('loginBtn')}
-              </Link>
+            <div className="bg-red-50 border border-red-300 rounded-xl p-3 mb-3">
+              <p className="text-sm text-red-600 font-medium">
+                අවම ඇණවුම් වටිනාකම රු. 2500/= ට වඩා වැඩි විය යුතුය.
+              </p>
+              <p className="text-xs text-red-500 mt-1">
+                To checkout, the total value of the bill should be greater than Rs. 2500/=
+              </p>
             </div>
           )}
+
+          {/* Checkout — no login needed */}
+          <button
+            onClick={() => navigate('/checkout')}
+            disabled={total < 2500}
+            className="btn-primary w-full py-3">
+            {t('checkout')}
+          </button>
 
           <button
             onClick={() => navigate('/')}
